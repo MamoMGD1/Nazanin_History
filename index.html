@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>آزمایشگاه تاریخ آمریکا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f1e7; --card:#fffdf8; --ink:#1d2433; --muted:#6b6f7a; --line:#e3dccd;
+  --accent:#b23a2e; --accent2:#2c4a7a; --ok:#2e7d4f; --bad:#b23a2e; --okbg:#e3f2e8; --badbg:#f8e1de; --selbg:#e6ecf6;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#14171f; --card:#1d2230; --ink:#ece7dc; --muted:#9aa0ad; --line:#2f3648;
+    --accent:#e0675a; --accent2:#7fa3dc; --ok:#5cc98a; --bad:#e0675a; --okbg:#173325; --badbg:#3a1d1a; --selbg:#1f2c45;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.75;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:540px;margin:0 auto;padding:16px 16px 48px}
+.screen{display:none}.screen.on{display:block}
+.kicker{display:inline-block;font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:0 10px;margin-top:8px}
+h1{font-size:26px;font-weight:800;margin:6px 0 2px}
+h2{font-size:20px;font-weight:800;margin:0}
+h3{font-size:18px;font-weight:800;margin:0 0 6px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 14px}
+.field{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;margin-bottom:6px}
+.field label{font-size:14px;color:var(--muted);white-space:nowrap}
+.field input{flex:1;border:0;background:transparent;color:var(--ink);font:inherit;font-size:16px;outline:none;min-width:0}
+.err{color:var(--accent);font-size:13px;margin:0 0 10px;min-height:20px}
+.games{display:grid;gap:12px}
+.game{display:flex;gap:14px;align-items:center;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;font:inherit;color:inherit;cursor:pointer;width:100%}
+.game:active{transform:scale(.98)}
+.game .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:26px;flex:none;background:var(--bg)}
+.game b{display:block;font-size:17px}
+.game span{display:block;color:var(--muted);font-size:13px;line-height:1.6}
+.game .best{color:var(--accent2);font-size:12px;margin-top:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.back{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:5px 12px;font:inherit;font-size:14px;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.hint{color:var(--muted);font-size:13px;margin:0 0 12px}
+.btn{display:block;width:100%;padding:13px;border:0;border-radius:12px;background:var(--accent);color:#fff;font:inherit;font-weight:700;font-size:16px;margin-top:12px;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.alt{background:var(--accent2)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.prog{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:6px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.qtext{font-size:16px;font-weight:600;margin:0 0 4px}
+.opt{display:block;width:100%;text-align:right;padding:12px 14px;margin-top:8px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.why{margin-top:12px;padding:12px;border-radius:12px;background:var(--bg);font-size:14px}
+.why b{color:var(--accent2)}
+.clues{margin:0;padding:0 18px 0 0}
+.clues li{margin-bottom:6px}
+.worth{font-size:13px;color:var(--accent);margin:8px 0 0}
+.final{text-align:center}
+.final .big{font-size:44px;font-weight:800;color:var(--accent);margin:4px 0}
+/* advisor */
+.tag{font-size:12px;color:var(--accent2);font-weight:600}
+.ctx{font-size:15px;margin:6px 0 12px}
+textarea{width:100%;min-height:150px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:16px;line-height:1.8;padding:10px 12px;resize:vertical;outline:none}
+textarea:focus{border-color:var(--accent2)}
+.count{font-size:12px;color:var(--muted);margin-top:4px}
+.quote{border-right:3px solid var(--accent2);padding:8px 12px;background:var(--bg);border-radius:8px;font-size:14px;white-space:pre-wrap;margin:8px 0 12px}
+.tips{margin:0 0 10px;padding:0 18px 0 0;font-size:13px;color:var(--muted)}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 10px}
+.choice{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px 4px;font:inherit;font-size:14px;cursor:pointer}
+.choice.on{border-color:var(--accent2);background:var(--selbg);font-weight:700}
+/* send */
+.send{margin-top:12px}
+.send b{font-size:16px}
+.sendrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.sbtn{padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.sbtn.main{grid-column:1/-1;background:var(--accent2);color:#fff;border:0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
+.toast.on{opacity:1}
+/* map */
+.board{position:relative;width:100%;aspect-ratio:1/1;background-color:var(--card);border:1px solid var(--line);border-radius:14px;touch-action:none;overflow:hidden;direction:ltr;user-select:none;-webkit-user-select:none;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:10% 10%}
+.ax{position:absolute;background:var(--muted);opacity:.45;pointer-events:none}
+.ax.h{left:0;right:0;top:50%;height:2px;margin-top:-1px}
+.ax.v{top:0;bottom:0;left:50%;width:2px;margin-left:-1px}
+.lbl{position:absolute;font-size:11px;color:var(--muted);background:var(--card);padding:0 6px;border-radius:6px;pointer-events:none;direction:rtl;white-space:nowrap;z-index:1}
+.l-l{left:4px;top:50%;transform:translateY(-50%)}
+.l-r{right:4px;top:50%;transform:translateY(-50%)}
+.l-t{top:4px;left:50%;transform:translateX(-50%)}
+.l-b{bottom:4px;left:50%;transform:translateX(-50%)}
+.tok{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:var(--accent2);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:800;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:grab;z-index:3;touch-action:none}
+.tok.sel{outline:3px solid var(--accent);outline-offset:2px}
+.ref{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border:2.5px dashed var(--ok);border-radius:6px;color:var(--ok);background:var(--card);display:grid;place-items:center;font-size:12px;font-weight:800;z-index:2}
+svg.lines{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none}
+svg.lines line{stroke:var(--ok);stroke-width:2;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.chip{border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 8px 4px 12px;font:inherit;font-size:13px;display:flex;gap:6px;align-items:center;cursor:pointer}
+.chip .n{width:22px;height:22px;border-radius:50%;background:var(--line);display:grid;place-items:center;font-size:11px;font-weight:800}
+.chip.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.chip.done .n{background:var(--accent2);color:#fff}
+.legend{font-size:13px;color:var(--muted);margin-top:10px}
+.res-item{border-top:1px solid var(--line);padding:10px 0;font-size:14px}
+.res-item .head{display:flex;justify-content:space-between;gap:8px;font-weight:700}
+.res-item p{margin:4px 0 0;color:var(--muted)}
+.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+.welcome{margin-bottom:14px;background:var(--selbg);border-color:transparent}
+.welcome b{font-size:18px}
+.welcome p{margin:4px 0 0;font-size:15px}
+.why.law{border-right:3px solid var(--accent)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.modal.on{display:flex}
+.mbox{background:var(--card);border-radius:20px;padding:24px;max-width:420px;text-align:center}
+.mbox p{font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HOME -->
+<section id="home" class="screen on">
+  <h1>آزمایشگاه تاریخ آمریکا</h1>
+  <p class="sub">پنج بازی برای فکر کردن، نه حفظ کردن.</p>
+  <div class="card welcome"><b>سلام نازنین! 👋</b><p>ای آزمایشگاه کوچک فقط و فقط برای تو ساخته شده. اینجه هیچ چیز ره حفظ نمی‌کنی، فقط فکر می‌کنی. هر وقت آماده بودی، یکی ره انتخاب کن 😊</p></div>
+  <div class="games">
+    <button class="game" onclick="need(startMap)"><div class="ic">🗺️</div><div><b>نقشه سیاسی</b><span>ده رئیس‌جمهور را روی نقشه دو محوری بچین</span><div class="best" id="best-map"></div></div></button>
+    <button class="game" onclick="need(()=>startQuiz('odd'))"><div class="ic">🧩</div><div><b>وصله ناجور</b><span>از چهار گزینه، کدام با بقیه جور نیست؟</span><div class="best" id="best-odd"></div></div></button>
+    <button class="game" onclick="need(startWho)"><div class="ic">🕵️</div><div><b>من کیستم؟</b><span>با کمترین سرنخ، شخصیت را حدس بزن</span><div class="best" id="best-who"></div></div></button>
+    <button class="game" onclick="need(()=>startQuiz('twins'))"><div class="ic">👥</div><div><b>دوقلوهای تاریخ</b><span>همتای آمریکایی چهره‌های جهان را پیدا کن</span><div class="best" id="best-twins"></div></div></button>
+    <button class="game" onclick="need(startAdv)"><div class="ic">🎙️</div><div><b>اتاق مشاوره</b><span>در لحظه بحران به رئیس‌جمهور مشاوره بده، بعد خودت را نقد کن</span><div class="best" id="best-adv"></div></div></button>
+  </div>
+  <p class="foot">ساخته‌شده فقط برای نازنین ⭐</p>
+</section>
+
+<!-- MAP -->
+<section id="map" class="screen">
+  <div class="top"><h2>نقشه سیاسی</h2><button class="back" onclick="show('home')">فرار به منو 🏃‍♀️</button></div>
+  <p class="hint">روی نام یک رئیس‌جمهور بزن، بعد روی نقشه جایی که فکر می‌کنی جای اوست. نقطه‌ها را می‌توانی بکشی و جابه‌جا کنی.<br>محور افقی: نقش دولت فدرال در اقتصاد. محور عمودی: میزان مداخله در امور جهان.</p>
+  <div class="board" id="board">
+    <div class="ax h"></div><div class="ax v"></div>
+    <svg class="lines" id="lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+    <span class="lbl l-l">دولت کوچک</span>
+    <span class="lbl l-r">دولت بزرگ</span>
+    <span class="lbl l-t">مداخله‌گرا در جهان</span>
+    <span class="lbl l-b">انزواطلب</span>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="legend" id="mapLegend" style="display:none">دایره آبی = جای تو · مربع خط‌چین سبز = جای پیشنهادی معلم</div>
+  <button class="btn" id="mapSubmit" onclick="submitMap()" disabled>قاضی، حکم بته! ⚖️</button>
+  <div id="mapRes"></div>
+</section>
+
+<!-- QUIZ (odd / twins) -->
+<section id="quiz" class="screen">
+  <div class="top"><h2 id="qTitle"></h2><button class="back" onclick="show('home')">فرار به منو 🏃‍♀️</button></div>
+  <p class="hint" id="qHint"></p>
+  <div id="qBox"></div>
+</section>
+
+<!-- WHO -->
+<section id="who" class="screen">
+  <div class="top"><h2>من کیستم؟</h2><button class="back" onclick="show('home')">فرار به منو 🏃‍♀️</button></div>
+  <p class="hint">هر سؤال با یک سرنخ شروع می‌شود. اگر با سرنخ اول درست بگویی ۴ امتیاز، با سرنخ آخر ۱ امتیاز.</p>
+  <div id="wBox"></div>
+</section>
+
+<!-- ADVISOR -->
+<section id="adv" class="screen">
+  <div class="top"><h2>اتاق مشاوره</h2><button class="back" onclick="show('home')">فرار به منو 🏃‍♀️</button></div>
+  <div id="aBox"></div>
+</section>
+
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="mbox"><div style="font-size:48px">🎉</div><h3>نازنین عاشوری!</h3><p>هر پنج بازی ره تمام کدی! ای آزمایشگاه از اول تا آخرش فقط به خاطر تو ساخته شد: هر سؤال، هر سناریو، حتی همی پیام. امیدوارم همو قدر که تاریخ آمریکا ره یاد گرفتی، کیف هم کده باشی. حالا برو به رئیس‌جمهورها بگو مشاور جدیدشان آمده 😎⭐</p><button class="btn" onclick="document.getElementById('modal').classList.remove('on')">بیزو مه خو همیتو یک شیر استم! 🦁</button></div></div>
+
+<script>
+/* ============ تنظیمات معلم ============
+   AUTO_SEND_URL:    آدرس Web app گوگل (Apps Script). با گذاشتن آن، هر جواب و هر نتیجه
+                     بدون هیچ کاری از طرف بازیکن، خودکار در Google Sheet ثبت می‌شود.
+   TEACHER_WHATSAPP: (اختیاری) شماره واتس‌اپ با کد کشور، بدون + (مثلاً "905xxxxxxxxx").  */
+const CONFIG={
+  TEACHER_WHATSAPP:"",
+  AUTO_SEND_URL:"https://script.google.com/macros/s/AKfycbwXIMvZIEbMZ8vmMCeys4Bzy8oyp0DCnus2HgI18nJBfjcv7wkXa3w3CNPW08UoCdg_/exec"
+};
+
+/* ---------- DATA ---------- */
+const PRES=[
+ {id:1,name:"جرج واشینگتن",short:"واشینگتن",x:1,y:-4,why:"بی‌طرفی در جنگ فرانسه و بریتانیا پایه انزواطلبی شد؛ اما از برنامه اقتصادی همیلتون (بانک مرکزی، پذیرش بدهی ایالت‌ها) حمایت کرد."},
+ {id:2,name:"توماس جفرسون",short:"جفرسون",x:-4,y:-2.5,why:"طرفدار دولت کوچک، قدرت ایالت‌ها و جامعه کشاورزی؛ از درگیری با قدرت‌های اروپایی پرهیز می‌کرد، هرچند خرید لوئیزیانا استثنای بزرگی بود."},
+ {id:3,name:"آبراهام لینکلن",short:"لینکلن",x:2,y:-2,why:"دولت فدرال را در برابر ایالت‌ها تقویت کرد و الگوی صنعتی همیلتونی را تثبیت کرد؛ تمرکزش جنگ داخلی بود، نه ماجراجویی خارجی."},
+ {id:4,name:"فرانکلین روزولت",short:"روزولت",x:5,y:3,why:"نیودیل بزرگ‌ترین مداخله دولت در اقتصاد تا آن زمان بود؛ پس از پرل هاربر آمریکا را از انزوا بیرون آورد و سازمان ملل را طراحی کرد."},
+ {id:5,name:"هری ترومن",short:"ترومن",x:3,y:4.5,why:"دکترین ترومن، طرح مارشال، اصل ۴ و جنگ کره: آغاز مداخله جهانی آمریکا؛ در داخل هم راه نیودیل را ادامه داد."},
+ {id:6,name:"دوایت آیزنهاور",short:"آیزنهاور",x:1,y:3,why:"نیودیل را برنچید ولی گسترشش هم نداد؛ از جنگ بزرگ پرهیز کرد اما با عملیات پنهانی سیا در ایران و گواتمالا مداخله کرد."},
+ {id:7,name:"لیندن جانسون",short:"جانسون",x:4.5,y:4,why:"جامعه بزرگ، Medicare و جنگ با فقر در داخل؛ و همزمان بیش از ۵۰۰ هزار سرباز در ویتنام."},
+ {id:8,name:"ریچارد نیکسون",short:"نیکسون",x:1.5,y:2.5,why:"واقع‌گرا: تنش‌زدایی با شوروی، گشایش چین و خروج تدریجی از ویتنام، اما با گسترش جنگ به کامبوج. در اقتصاد برنامه‌های دولتی را برنچید."},
+ {id:9,name:"جیمی کارتر",short:"کارتر",x:-1,y:0.5,why:"مقررات‌زدایی را آغاز کرد؛ سیاست خارجی‌اش بر حقوق بشر و میانجی‌گری (کمپ دیوید) تکیه داشت و از جنگ پرهیز کرد."},
+ {id:10,name:"رونالد ریگان",short:"ریگان",x:-4,y:4,why:"کاهش مالیات، مقررات‌زدایی و کاهش بودجه رفاهی؛ اما سیاست خارجی تهاجمی: امپراتوری شر، جنگ ستارگان و حمایت از کنتراها."}
+];
+
+const ODD=[
+ {opts:["همیلتون","لینکلن","روزولت","جفرسون"],ans:"جفرسون",why:"سه نفر دیگر طرفدار دولت فدرال قوی بودند؛ جفرسون مدافع دولت کوچک و قدرت ایالت‌ها بود."},
+ {opts:["تاچر","ریگان","میتران (۱۹۸۱)","کارتر (مقررات‌زدایی)"],ans:"میتران (۱۹۸۱)",why:"میتران در ۱۹۸۱ بانک‌ها را ملی کرد و مالیات ثروتمندان را بالا برد؛ سه نفر دیگر هر کدام به نوعی دولت را از اقتصاد عقب کشیدند."},
+ {opts:["آیزنهاور","دوگل","واشینگتن","کندی"],ans:"کندی",why:"سه نفر دیگر فرمانده عالی ارتش بودند و از میدان جنگ به رهبری کشور رسیدند. کندی افسر جوان نیروی دریایی بود."},
+ {opts:["کودتای ۲۸ مرداد","کودتای گواتمالا","حمله خلیج خوک‌ها","عملیات طوفان صحرا"],ans:"عملیات طوفان صحرا",why:"سه مورد اول عملیات پنهانی سیا بودند. طوفان صحرا جنگی آشکار با ائتلاف ۳۵ کشور و مجوز شورای امنیت بود."},
+ {opts:["نیودیل","جامعه بزرگ","طرح مارشال","ریگانیسم"],ans:"ریگانیسم",why:"سه مورد دیگر برنامه‌های بزرگ هزینه‌کرد دولتی بودند (دوتا در داخل، یکی در اروپا). ریگانیسم بر کوچک کردن نقش اقتصادی دولت تکیه داشت."},
+ {opts:["فورد","نیکسون","جانسون","کارتر"],ans:"فورد",why:"سه نفر دیگر دست‌کم یک بار در انتخابات ریاست‌جمهوری پیروز شدند. فورد نه برای معاونت و نه برای ریاست‌جمهوری انتخاب نشد."},
+ {opts:["واترگیت","ایران-کنترا","اسناد پنتاگون","کمپ دیوید"],ans:"کمپ دیوید",why:"سه مورد دیگر افشای پنهان‌کاری یا دور زدن قانون توسط دولت بودند. کمپ دیوید یک توافق صلح بود."},
+ {opts:["قانون تمبر","قوانین تاونزند","شورش ویسکی","طرح مارشال"],ans:"طرح مارشال",why:"سه مورد دیگر درگیری بر سر مالیات بودند. نکته جالب: در شورش ویسکی، خود دولت تازه‌تأسیس آمریکا با همان نوع اعتراض مالیاتی روبرو شد که علیه بریتانیا کرده بود."},
+ {opts:["ترکیه","یونان","ایران","کوبا"],ans:"کوبا",why:"ترکیه و یونان مخاطب دکترین ترومن بودند و ایران با اصل ۴ کمک گرفت. کوبا برعکس، پایگاه شوروی در کنار آمریکا شد."},
+ {opts:["جنگ کره","جنگ ویتنام","حمله خلیج خوک‌ها","جنگ اول خلیج فارس"],ans:"جنگ اول خلیج فارس",why:"تنها موردی که با پیروزی روشن و سریع تمام شد. کره به بن‌بست رسید، ویتنام شکست بود و خلیج خوک‌ها مایه تحقیر شد."},
+ {opts:["بنجامین فرانکلین","الکساندر همیلتون","آبراهام لینکلن","توماس جفرسون"],ans:"توماس جفرسون",why:"سه نفر دیگر از خانواده‌های فقیر یا معمولی آمدند و خودساخته بودند. جفرسون در خانواده‌ای ثروتمند و زمین‌دار به دنیا آمد."},
+ {opts:["جفرسون","ریگان","کارتر","روزولت"],ans:"روزولت",why:"سه نفر دیگر هر کدام به نوعی از دخالت کمتر دولت در اقتصاد دفاع کردند. روزولت با نیودیل دولت را وارد اقتصاد کرد. (پس این دو حزب همیشه یک شکل نبوده‌اند!)"}
+];
+
+const TWINS=[
+ {tag:"امان‌الله خان",q:"امان‌الله خان در ۱۹۱۹ در جنگ سوم افغان و انگلیس، استقلال کامل افغانستان را از بریتانیا گرفت. همتای آمریکایی او کیست؟",opts:["جرج واشینگتن","آبراهام لینکلن","جان اف کندی","رونالد ریگان"],ans:"جرج واشینگتن",why:"هر دو کشورشان را در جنگ با بریتانیا به استقلال رساندند. اما یک تفاوت بزرگ: امان‌الله پادشاه شد و اصلاحاتش را آن‌قدر سریع پیش برد که شورش شد و در ۱۹۲۹ کشور را ترک کرد؛ واشینگتن پیشنهاد پادشاهی را رد کرد و آهسته و با قانون جلو رفت."},
+ {tag:"مصدق",q:"دکتر مصدق نفت ایران را از دست یک شرکت بریتانیایی بیرون آورد. در تاریخ آمریکا هم گروهی علیه انحصار یک شرکت بریتانیایی شورش کردند. کدام؟",opts:["معترضان مهمانی چای بوستون","ایالت‌های کنفدره جنوب","شورشیان ویسکی","کنتراهای نیکاراگوئه"],ans:"معترضان مهمانی چای بوستون",why:"در ۱۷۷۳ مستعمره‌نشینان محموله چای «کمپانی هند شرقی» بریتانیا را به دریا ریختند؛ مصدق هم با شرکت نفت انگلیس و ایران درافتاد. طنز تلخ تاریخ: کشوری که با شورش علیه یک شرکت بریتانیایی متولد شد، در ۱۹۵۳ به بریتانیا کمک کرد تا مصدق را برکنار کند."},
+ {tag:"مشروطه",q:"در انقلاب مشروطه ایران (۱۹۰۶)، مردم شاه را مجبور کردند قدرتش را با قانون اساسی و مجلس محدود کند. این حرکت به کدام لحظه تاریخ آمریکا نزدیک است؟",opts:["نوشتن قانون اساسی ۱۷۸۷","شورش ویسکی","جدایی ایالت‌های جنوب","طرح نیودیل"],ans:"نوشتن قانون اساسی ۱۷۸۷",why:"هر دو می‌خواستند قدرت را از یک نفر بگیرند و به قانون و نمایندگان مردم بدهند؛ همان روح «We the People». تفاوت: آمریکا اصلاً پادشاه نداشت، اما مشروطه‌خواهان مجبور بودند با شاهی که سر جایش بود کنار بیایند."},
+ {tag:"شوروی در افغانستان",q:"شوروی در ۱۹۷۹ به افغانستان حمله کرد، ده سال جنگید و سرانجام بدون پیروزی بیرون رفت. این جنگ برای شوروی همان چیزی بود که کدام جنگ برای آمریکا بود؟",opts:["جنگ ویتنام","جنگ کره","عملیات طوفان صحرا","جنگ داخلی آمریکا"],ans:"جنگ ویتنام",why:"در هر دو، یک ابرقدرت جنگ را از عینک جنگ سرد دید، اما مردم محلی آن را جنگ استقلال می‌دانستند. ابرقدرت رقیب هم به طرف مقابل سلاح می‌داد: شوروی به ویتنام شمالی، آمریکا به مجاهدین افغان. شوروی در ۱۹۸۹ بیرون رفت و دو سال بعد خودش فروپاشید."},
+ {tag:"داوود خان",q:"داوود خان در دهه ۵۰ و ۶۰ میلادی هم از آمریکا کمک گرفت و هم از شوروی: شوروی تونل سالنگ را ساخت و آمریکا فرودگاه کندهار را. آمریکا با کدام سیاست سعی داشت کشورهایی مثل افغانستان را به سمت خود بکشد؟",opts:["کمک‌های جنگ سرد مثل اصل ۴ ترومن","انزواطلبی جرج واشینگتن","نیودیل روزولت","ریگانیسم"],ans:"کمک‌های جنگ سرد مثل اصل ۴ ترومن",why:"در جنگ سرد، دو ابرقدرت با جاده و سد و فرودگاه برای جلب کشورهای بی‌طرف رقابت می‌کردند. افغانستان سال‌ها از همین رقابت سود برد، تا اینکه در ۱۹۷۹ خودش میدان جنگ شد."},
+ {tag:"آتاتورک",q:"آتاتورک به‌جای استانبول، شهر کوچک آنکارا را پایتخت جمهوری تازه ترکیه کرد. در آمریکا هم پایتخت دائمی در شهری تازه ساخته شد. این تصمیم حاصل توافق چه کسانی بود؟",opts:["همیلتون و جفرسون","لینکلن و جانسون","کندی و خروشچف","نیکسون و کیسینجر"],ans:"همیلتون و جفرسون",why:"جفرسون و مدیسون با طرح بدهی‌های همیلتون موافقت کردند به شرط آنکه پایتخت به جنوب منتقل شود؛ نتیجه‌اش شهر واشینگتن بود. در هر دو کشور، پایتخت تازه نماد یک شروع تازه بود، دور از مرکز قدرت قدیمی."},
+ {tag:"امیرکبیر",q:"امیرکبیر در ایران مالیه کشور را متمرکز کرد، کارخانه‌های دولتی ساخت و دارالفنون را تأسیس کرد. شبیه کدام بنیان‌گذار آمریکاست؟",opts:["الکساندر همیلتون","توماس جفرسون","بنجامین فرانکلین","جرج واشینگتن"],ans:"الکساندر همیلتون",why:"هر دو معمار نظام مالی و صنعتی کشورشان بودند و هر دو در اوج کار با مرگی خشونت‌آمیز از صحنه حذف شدند."},
+ {tag:"گورباچف",q:"گورباچف با سیاست «گلاسنوست» (فضای باز) اجازه داد رسانه‌ها دروغ‌ها و جنایت‌های پنهان دولت شوروی را افشا کنند. در آمریکا کدام رویداد چنین نقشی داشت؟",opts:["افشای اسناد پنتاگون","طرح مارشال","پیمان کمپ دیوید","خرید لوئیزیانا"],ans:"افشای اسناد پنتاگون",why:"اسناد پنتاگون (۱۹۷۱) نشان داد دولت‌های آمریکا سال‌ها درباره ویتنام به مردم دروغ گفته بودند. فرق مهم: در آمریکا روزنامه‌ها این را برخلاف میل دولت منتشر کردند، اما در شوروی خود رهبر در را باز کرد."},
+ {tag:"استالین",q:"استالین با «برنامه‌های پنج‌ساله» کل اقتصاد شوروی را در دست دولت گرفت و صنعت را با دستور دولتی ساخت. نزدیک‌ترین رئیس‌جمهور آمریکا به این ایده کیست؟ (مراقب باش، این شباهت محدود است!)",opts:["فرانکلین روزولت","رونالد ریگان","توماس جفرسون","جیمی کارتر"],ans:"فرانکلین روزولت",why:"روزولت هم با نیودیل دولت را وارد اقتصاد کرد. اما فرق بزرگی هست: استالین بازار و مالکیت خصوصی را از بین برد، روزولت بازار را نجات داد تا از بین نرود. گاهی بهترین درس یک مقایسه، تفاوت‌هایش است."},
+ {tag:"هوشی‌مین",q:"هوشی‌مین در ۱۹۴۵ بیانیه استقلال ویتنام را با جمله‌هایی از یک سند آمریکایی آغاز کرد. نویسنده اصلی آن سند کیست؟",opts:["توماس جفرسون","بنجامین فرانکلین","الکساندر همیلتون","آبراهام لینکلن"],ans:"توماس جفرسون",why:"هوشی‌مین خودش را ضداستعمار می‌دید، شبیه انقلابیون ۱۷۷۶، اما واشینگتن او را فقط مهره کمونیسم دید؛ همان خطایی که بعدها به شکست در ویتنام انجامید."},
+ {tag:"ناپلئون",q:"ناپلئون برای تأمین هزینه جنگ‌هایش در اروپا، سرزمینی بزرگ در آمریکای شمالی را فروخت. خریدار کدام رئیس‌جمهور بود؟",opts:["توماس جفرسون","جرج واشینگتن","آبراهام لینکلن","الکساندر همیلتون"],ans:"توماس جفرسون",why:"خرید لوئیزیانا (۱۸۰۳) خاک آمریکا را دو برابر کرد. جالب اینکه جفرسون، طرفدار دولت کوچک، برای این خرید از قدرتی استفاده کرد که قانون اساسی صریحاً به او نداده بود."},
+ {tag:"تاچر",q:"مارگارت تاچر در بریتانیا مالیات‌ها را کاهش داد، شرکت‌های دولتی را خصوصی کرد، اعتصاب بزرگ معدنچیان را شکست داد و در برابر شوروی سرسخت بود. همتای آمریکایی‌اش کیست؟",opts:["رونالد ریگان","جیمی کارتر","لیندن جانسون","فرانکلین روزولت"],ans:"رونالد ریگان",why:"ریگان هم در ۱۹۸۱ اعتصاب کنترلرهای ترافیک هوایی را شکست. این دو واقعاً دوست نزدیک و هم‌پیمان سیاسی بودند."}
+];
+
+const WHO=[
+ {clues:["در جوانی در جنگ شکست‌هایی خوردم و فرمانده درخشانی نبودم.","زمین‌دار و برده‌دار ویرجینیایی بودم.","شورشی را بر سر مالیات مشروب سرکوب کردم.","پیشنهاد پادشاهی را رد کردم و سنت دو دوره ریاست‌جمهوری را بنیان گذاشتم."],opts:["جرج واشینگتن","توماس جفرسون","آبراهام لینکلن","الکساندر همیلتون"],ans:"جرج واشینگتن",why:"سنت دو دوره او را ۱۴۴ سال بعد روزولت شکست. سؤال برای فکر: چرا روزولت توانست؟"},
+ {clues:["هرگز رئیس‌جمهور نشدم.","با اعتبار علمی‌ام یک پادشاهی اروپایی را به حمایت از انقلاب قانع کردم.","یک عبارت در بیانیه استقلال را عوض کردم تا مشروعیت از عقل بیاید.","میله برق‌گیر را اختراع کردم."],opts:["بنجامین فرانکلین","الکساندر همیلتون","توماس جفرسون","جرج واشینگتن"],ans:"بنجامین فرانکلین",why:"تنها کسی که پای هر چهار سند بنیادین آمریکا را امضا کرد."},
+ {clues:["هرگز رئیس‌جمهور نشدم.","معتقد بودم بدهی می‌تواند یک ملت را به هم بچسباند.","یتیم و فقیر در جزایر کارائیب به دنیا آمدم.","در دوئل با معاون رئیس‌جمهور کشته شدم."],opts:["الکساندر همیلتون","بنجامین فرانکلین","توماس جفرسون","جیمز مدیسون"],ans:"الکساندر همیلتون",why:"معمار نظام مالی آمریکا؛ ایده‌هایش بعدها تا آلمان و ژاپن هم رسید."},
+ {clues:["در دوره من سازمانی برای رقابت در فضا تأسیس شد.","دکترین من بر بمب و هواپیما تکیه داشت، نه سرباز پیاده.","در دوره من دو دولت منتخب در دو قاره با عملیات پنهانی سرنگون شدند.","در سخنرانی خداحافظی درباره مجتمع نظامی-صنعتی هشدار دادم."],opts:["دوایت آیزنهاور","هری ترومن","جان اف کندی","ریچارد نیکسون"],ans:"دوایت آیزنهاور",why:"ناسا، دکترین نگاه نو، کودتای ایران و گواتمالا. هشدار یک ژنرال درباره قدرت ارتش، خودش یک پارادوکس جالب است."},
+ {clues:["سیاست خارجی را بر اساس منافع می‌چیدم، نه ایدئولوژی.","با شوروی پیمان کاهش تسلیحات هسته‌ای امضا کردم.","به پکن سفر کردم تا موازنه را علیه مسکو بر هم بزنم.","پیش از استیضاح استعفا دادم."],opts:["ریچارد نیکسون","جرالد فورد","جان اف کندی","رونالد ریگان"],ans:"ریچارد نیکسون",why:"استاد Realpolitik با کیسینجر؛ اما واترگیت همه دستاوردهایش را تحت‌الشعاع قرار داد."},
+ {clues:["هرگز در هیچ انتخابات سراسری برای کاخ سفید پیروز نشدم.","کمپینی برای «شکست دادن تورم» راه انداختم که ناکام ماند.","اولین اختلاف‌ها با شاه ایران بر سر قیمت نفت در دوره من بروز کرد.","سلفم را که استعفا داده بود عفو کردم."],opts:["جرالد فورد","ریچارد نیکسون","جیمی کارتر","جرج بوش پدر"],ans:"جرالد فورد",why:"تنها رئیس‌جمهوری که نه برای معاونت و نه برای ریاست‌جمهوری انتخاب شد."},
+ {clues:["خودم را آدمی بیرون از بازی‌های سیاسی واشینگتن معرفی کردم.","ورزشکاران کشورم را از رفتن به المپیک مسکو منع کردم.","رهبران مصر و اسرائیل را در یک اقامتگاه به صلح رساندم.","عملیات نجات گروگان‌ها در صحرای طبس در دوره من شکست خورد."],opts:["جیمی کارتر","جرالد فورد","رونالد ریگان","ریچارد نیکسون"],ans:"جیمی کارتر",why:"رئیس‌جمهور حقوق بشر که هم مقررات‌زدایی را آغاز کرد و هم با انقلاب ایران روبرو شد."},
+ {clues:["رئیس یک سازمان اطلاعاتی بودم.","نماینده کشورم در سازمان ملل و در چین بودم.","ائتلافی از ۳۵ کشور ساختم و جنگی را در چند هفته بردم.","یک قول مالیاتی معروف دادم و نتوانستم سرش بمانم."],opts:["جرج بوش پدر","رونالد ریگان","جرالد فورد","جیمی کارتر"],ans:"جرج بوش پدر",why:"مدیر آرام پایان جنگ سرد؛ با ۸۹ درصد محبوبیت پس از جنگ، انتخابات بعدی را باخت."}
+];
+
+const SCEN=[
+ {id:"cuba",title:"بحران موشکی کوبا",who:"جان اف کندی",date:"اکتبر ۱۹۶۲",
+  ctx:"عکس‌های هواپیمای جاسوسی نشان می‌دهد شوروی در کوبا، حدود ۱۵۰ کیلومتری فلوریدا، در حال نصب موشک‌های هسته‌ای است. برخی ژنرال‌ها حمله هوایی فوری و سپس حمله زمینی به کوبا را پیشنهاد می‌کنند. برخی دیگر می‌گویند هر حمله‌ای ممکن است به جنگ هسته‌ای برسد. شکست خلیج خوک‌ها هنوز در ذهن همه است.",
+  real:"کندی نه حمله کرد و نه کوتاه آمد: «قرنطینه» دریایی اعلام کرد. کلمه «محاصره» را عمداً به کار نبرد، چون از نظر حقوقی نوعی اعلان جنگ بود. پس از ۱۳ روز، خروشچف موشک‌ها را برچید؛ آمریکا متعهد شد به کوبا حمله نکند و در توافقی پنهانی موشک‌هایش را از ترکیه برداشت. دهه‌ها بعد معلوم شد شوروی در کوبا سلاح هسته‌ای تاکتیکی هم داشت؛ یعنی حمله زمینی می‌توانست به فاجعه‌ای بزرگ برسد.",
+  think:"چرا بخش ترکیه توافق پنهان ماند؟ اگر علنی می‌شد، برای کندی و برای ناتو چه معنایی داشت؟"},
+ {id:"bomb",title:"بمب اتم",who:"هری ترومن",date:"ژوئیه ۱۹۴۵",
+  ctx:"آلمان تسلیم شده اما ژاپن همچنان می‌جنگد. نبرد اوکیناوا ده‌ها هزار کشته داشت و برنامه حمله زمینی به خاک اصلی ژاپن آماده است. آزمایش بمب اتم در نیومکزیکو موفق بوده. گزینه‌ها روی میز: حمله زمینی، ادامه محاصره و بمباران، نمایش بمب در یک منطقه خالی، تضمین حفظ امپراتور در ازای تسلیم، یا صبر تا ورود شوروی به جنگ با ژاپن.",
+  real:"ترومن دستور استفاده داد: هیروشیما (۶ اوت) و ناکازاکی (۹ اوت). در ۸ اوت شوروی هم به ژاپن اعلان جنگ داد. ژاپن ۱۵ اوت تسلیم شد و در نهایت امپراتور هم حفظ شد. مورخان هنوز بحث می‌کنند که کدام عامل، بمب یا ورود شوروی، تعیین‌کننده‌تر بود.",
+  think:"آیا هدف بمب فقط تسلیم ژاپن بود، یا پیامی هم برای استالین داشت؟ با چه شواهدی می‌شود این را سنجید؟"},
+ {id:"iran53",title:"ایران، مرداد ۱۳۳۲",who:"دوایت آیزنهاور",date:"۱۹۵۳",
+  ctx:"دولت مصدق نفت را ملی کرده و بریتانیا برای سرنگونی او به آمریکا فشار می‌آورد. دولت قبلی آمریکا بیشتر به میانجی‌گری تمایل داشت. در دولت جدید، برادران دالس (وزیر خارجه و رئیس سیا) هشدار می‌دهند که بحران اقتصادی ممکن است ایران را به سمت شوروی ببرد.",
+  real:"آیزنهاور عملیات آژاکس را تأیید کرد و در ۲۸ مرداد مصدق برکنار شد. در کوتاه‌مدت، شرکت‌های آمریکایی در کنسرسیوم نفت ۱۹۵۴ سهم گرفتند و شاه متحد نزدیک آمریکا شد. در بلندمدت، این کودتا به یکی از ریشه‌های بی‌اعتمادی عمیق ایرانیان به آمریکا تبدیل شد که ۲۶ سال بعد در انقلاب و تسخیر سفارت خودش را نشان داد.",
+  think:"اگر یک ایرانی در سال ۱۹۵۳ بودی، این تصمیم را چطور می‌دیدی؟ آیا خطر شوروی واقعی بود یا بهانه؟"},
+ {id:"tonkin",title:"خلیج تونکین",who:"لیندن جانسون",date:"اوت ۱۹۶۴",
+  ctx:"گزارش رسیده که قایق‌های ویتنام شمالی به یک ناوشکن آمریکایی حمله کرده‌اند؛ گزارش حمله دوم مبهم و مشکوک است. سه ماه تا انتخابات ریاست‌جمهوری مانده و رقیب جمهوری‌خواه جانسون را در برابر کمونیسم ضعیف می‌خواند. همزمان، جانسون می‌خواهد برنامه جامعه بزرگ را در کنگره پیش ببرد.",
+  real:"جانسون دستور حمله تلافی‌جویانه محدود داد و از کنگره «قطعنامه خلیج تونکین» را گرفت که اختیار جنگی تقریباً نامحدودی به او می‌داد. این قطعنامه پایه قانونی اعزام بیش از ۵۰۰ هزار سرباز شد. بعدها معلوم شد حمله دوم به احتمال زیاد اصلاً رخ نداده بود. جنگ، جامعه بزرگ را هم قربانی کرد و جانسون در ۱۹۶۸ از نامزدی کنار کشید.",
+  think:"وقتی اطلاعات ناقص است، مشاور باید بر اساس بدترین سناریو توصیه کند یا محتمل‌ترین؟",
+  law:"کنگره بعدها از این تجربه درس گرفت و در ۱۹۷۳ «قانون اختیارات جنگی» (War Powers Resolution) را تصویب کرد تا رئیس‌جمهور نتواند بدون اجازه کنگره مدت طولانی وارد جنگ شود. به نظرت این قانون با اصل تفکیک قوا جور درمی‌آید یا اختیار فرمانده کل قوا را محدود می‌کند؟"},
+ {id:"emanc",title:"زمان اعلام آزادی برده‌ها",who:"آبراهام لینکلن",date:"تابستان ۱۸۶۲",
+  ctx:"جنگ داخلی برای شمال خوب پیش نمی‌رود. بریتانیا و فرانسه به رسمیت شناختن جنوب را بررسی می‌کنند. لینکلن پیش‌نویس بیانیه آزادی برده‌ها را آماده کرده است. چهار ایالت مرزی برده‌دار هنوز به شمال وفادارند و ممکن است با این بیانیه به جنوب بپیوندند.",
+  real:"لینکلن به توصیه وزیر خارجه‌اش، ویلیام سوارد، صبر کرد تا یک پیروزی نظامی به دست آید تا بیانیه نشانه استیصال به نظر نرسد. پس از نبرد آنتیتم (سپتامبر ۱۸۶۲) بیانیه مقدماتی را اعلام کرد که از اول ژانویه ۱۸۶۳ اجرایی شد. بیانیه فقط برده‌های ایالت‌های شورشی را آزاد اعلام کرد، نه ایالت‌های مرزی وفادار را. جنگ رنگ اخلاقی گرفت و حمایت آشکار بریتانیا از جنوب دشوار شد.",
+  think:"چرا بیانیه برده‌های ایالت‌های وفادار را آزاد نکرد؟ تناقض بود یا هوشمندی سیاسی؟",
+  law:"لینکلن بیانیه را با اختیار جنگی «فرمانده کل قوا» صادر کرد، نه با قانون. به همین دلیل فقط شامل ایالت‌های شورشی می‌شد و ممکن بود بعد از جنگ در دادگاه زیر سؤال برود. برای همین متمم سیزدهم لازم شد. تفاوت یک فرمان اجرایی و یک متمم قانون اساسی را تو بهتر از همه می‌دانی!"},
+ {id:"pardon",title:"عفو نیکسون",who:"جرالد فورد",date:"سپتامبر ۱۹۷۴",
+  ctx:"یک ماه از استعفای نیکسون گذشته. اگر عفو نشود، محاکمه‌اش ممکن است سال‌ها کشور را درگیر کند و هر روز خبر اول رسانه‌ها باشد. اما بسیاری عفو را معامله‌ای پنهانی می‌دانند و می‌گویند هیچ‌کس نباید بالاتر از قانون باشد.",
+  real:"فورد نیکسون را به‌طور کامل عفو کرد. محبوبیتش به‌شدت سقوط کرد و در انتخابات ۱۹۷۶ به کارتر باخت؛ عفو یکی از دلایل این شکست شمرده می‌شود. سال‌ها بعد، در ۲۰۰۱، جایزه «شجاعت سیاسی» بنیاد کندی به خاطر همین تصمیم به فورد داده شد.",
+  think:"آیا تصمیمی که برای سیاستمدار گران تمام می‌شود ولی شاید برای کشور مفید است، نشانه رهبری خوب است؟ چه کسی تشخیص می‌دهد که مفید بوده؟",
+  law:"نیکسون هنوز متهم هم نشده بود که عفو شد. آیا رئیس‌جمهور می‌تواند کسی را پیش از اتهام عفو کند؟ دیوان عالی در پرونده Ex parte Garland (۱۸۶۶) گفته بود بله: عفو در هر زمانی پس از ارتکاب جرم ممکن است، پیش از دادرسی، در جریان آن یا پس از آن. نظر حقوقی تو چیست؟"},
+ {id:"shah",title:"شاه بیمار",who:"جیمی کارتر",date:"اکتبر ۱۹۷۹",
+  ctx:"شاه که از ایران رفته، به سرطان مبتلاست و برای درمان درخواست ورود به آمریکا دارد. دوستان قدیمی او، از جمله کیسینجر، فشار می‌آورند که آمریکا نباید متحد قدیمی‌اش را رها کند. سفارت آمریکا در تهران هشدار داده که پذیرش شاه ممکن است به حمله به سفارت منجر شود.",
+  real:"کارتر به دلایل انسانی و زیر فشار دوستان شاه، با ورود او برای درمان موافقت کرد (۲۲ اکتبر ۱۹۷۹). دو هفته بعد، در ۱۳ آبان ۱۳۵۸، دانشجویان سفارت را تسخیر کردند و گروگان‌گیری ۴۴۴ روزه آغاز شد؛ بحرانی که به شکست طبس و شکست کارتر در انتخابات ۱۹۸۰ انجامید.",
+  think:"وفاداری به یک متحد قدیمی کجا ارزش اخلاقی است و کجا اشتباه استراتژیک؟"},
+ {id:"baghdad",title:"تا بغداد؟",who:"جرج بوش پدر",date:"فوریه ۱۹۹۱",
+  ctx:"ارتش عراق در چهار روز نبرد زمینی از کویت بیرون رانده شده و راه بغداد تقریباً باز است. برخی می‌گویند الان بهترین فرصت برای سرنگونی صدام است. اما قطعنامه سازمان ملل فقط آزادسازی کویت را مجاز کرده و کشورهای عرب ائتلاف با اشغال عراق مخالف‌اند.",
+  real:"بوش جنگ را پس از حدود ۱۰۰ ساعت نبرد زمینی متوقف کرد و صدام در قدرت ماند. استدلالش این بود که ائتلاف از هم می‌پاشد و آمریکا در اشغال یک کشور گرفتار می‌شود. ۱۲ سال بعد، پسرش جرج دبلیو بوش در ۲۰۰۳ به عراق حمله کرد و صدام را سرنگون کرد، و آمریکا با همان مشکلاتی روبرو شد که پدر از آن‌ها می‌ترسید.",
+  think:"آیا تصمیم پدر درست بود؟ تجربه ۲۰۰۳ به نفع کدام طرف این بحث شهادت می‌دهد؟"}
+];
+
+/* ---------- HELPERS ---------- */
+const $=s=>document.querySelector(s);
+const fa=n=>Number(n).toLocaleString('fa-IR');
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function getBest(k){const v=lsGet('hl-best-'+k);return v===null?null:+v;}
+function setBest(k,v){const o=getBest(k);if(o===null||v>o)lsSet('hl-best-'+k,String(v));}
+function advDone(){try{return JSON.parse(lsGet('hl-adv')||'[]');}catch(e){return [];}}
+const MAX={map:100,odd:ODD.length,twins:TWINS.length,who:WHO.length*4};
+function renderBest(){
+  for(const k in MAX){const b=getBest(k);const el=$('#best-'+k);if(el)el.textContent=b===null?'':'بهترین امتیاز تو: '+fa(b)+' از '+fa(MAX[k]);}
+  const d=advDone().length;$('#best-adv').textContent=d?'سناریوهای کامل‌شده: '+fa(d)+' از '+fa(SCEN.length):'';
+}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0);if(id==='home')renderBest();}
+/* ---------- پیام‌های نازنین ---------- */
+const MSG={
+ right:["اینمیتو!!! 🔥","دیوان عالی به اتفاق آرا رأی داد: جوابت درسته! ⚖️","جوان! همیلتون از قبرش برایت کف زد 👏","واه واه نازنین، کیسینجر هم اینقدر زود نمی‌فهمید!","اینه! حقوق‌دان آینده این‌طور جواب می‌ته 😎","لالا، دمت گرم! 💪","صد آفرین نازنین! اینمیتو!","ای جواب ره باید قاب گرفت و ده کاخ سفید زد 🖼️","برادر محترم، شما امروز آتش گرفتین! 🔥"],
+ wrong:["قطار چنای شدی؟ 🚂","ازو شیشه‌های کلان داری؟ اوره ده فرق خود بزن! 🤓","برادر محترم، اعتراض وارد نیست! 😄","نازنین جان، ای جواب ره خود جفرسون هم امضا نمی‌کد 😅","خیر است جوان، لینکلن هم اول چند تا جنگ ره باخت!","ای یکی ره ده پرونده‌ات ثبت نمی‌کنیم، قول 🤫","یک خلیج خوک‌های کوچک بود 🐷 کندی هم بعدش بحران کوبا ره برد!","قاضی می‌گه: دلایل کافی نیست، پرونده دوباره باز می‌شه ⚖️","لالا، ای جواب از مدار خارج شد 🛰️ ولی ناسا هم اول چند تا موشک ترکاند!"],
+ streak3:["سه تا پشت هم! نازنین، داری مثل ارتش یونیون پیش میری 🚀","هت‌تریک! کسی جلوی ای دختر ره بگیره 😄"],
+ streak5:["پنج تا پشت هم؟! نازنین عاشوری رسماً مورخ اعلام شد 🎓","پنج پشت هم! ای دیگه شوخی نیست، باید یک فصل از کتاب تاریخ ره به نام تو کنن 📜"],
+ firstClue:["با یک سرنخ؟! نازنین، تو کارآگاه هستی یا مورخ؟ 🕵️‍♀️","شرلوک هلمز هم با یک سرنخ نمی‌فهمید! اینمیتو!!! 🔍"],
+ high:["نازنین! اینمیتو!!! 🏆 با ای امتیاز می‌تانی به جرج واشینگتن بگی بخیزه جای خوده بته 😄","لالا! ای نتیجه ره اگه همیلتون می‌دید، می‌گفت ای دختر باید وزیر خزانه‌داری شوه 💰","برادر محترم، اجازه بتین: مورخ امروز، حقوق‌دان فردا. هر دوش تویی نازنین ⭐"],
+ mid:["خوب بود جوان! 👏 نیم راه ره رفتی، نیمه دیگه‌ش با یک دور دیگه حل است.","نازنین، بد نبود! همیلتون هم بار اول حساب‌ها ره درست نکده بود 😄 یک دور دیگه؟","قطار چنای کمی تکان خورد ولی از ریل خارج نشد 🚂 یک دور دیگه بزن، درست میشه!"],
+ low:["قطار چنای امروز کمی از ریل خارج شد 🚂😄 خیر است نازنین، تاریخ ره کسایی نوشتن که بعد از شکست دوباره امتحان کدن.","شیشه‌های کلان ره بزن و یک دور دیگه 🤓 ای بار مطمئنم بهتر میشه، جوان!","کارتر هم روزهای بد داشت، ولی بعدها جایزه صلح نوبل گرفت 🕊️ تو هم یک دور دیگه بزن نازنین!"],
+ adv:["آفرین نازنین! نقد کدن نظر خود سخت‌ترین کار دنیاست. یک وکیل خوب هم همی کار ره می‌کنه: اول دفاع، بعد خودش ره جای دادستان می‌مانه ⚖️","جوان! امروز هم مشاور رئیس‌جمهور بودی، هم منتقدش. فردا شاید قاضی دیوان عالی 😎","اینمیتو!!! مشاوری که جرئت داره نظر خوده نقد کنه، از ده ژنرال کارآمدتره 🎖️"]
+};
+const _last={};
+function pick(k){const a=MSG[k];let i;do{i=Math.floor(Math.random()*a.length);}while(a.length>1&&i===_last[k]);_last[k]=i;return a[i];}
+function verdict(r){return r>=.8?pick('high'):r>=.5?pick('mid'):pick('low');}
+function streakMsg(n){return n===5?pick('streak5'):n===3?pick('streak3'):pick('right');}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('on'),1800);}
+
+/* ---------- NAME ---------- */
+const NAME="نازنین عاشوری";
+function getName(){return NAME;}
+function need(fn){fn();}
+function markPlayed(game){
+  let p;try{p=JSON.parse(lsGet('hl-played')||'[]');}catch(e){p=[];}
+  if(!p.includes(game)){p.push(game);lsSet('hl-played',JSON.stringify(p));}
+  if(p.length>=5&&!lsGet('hl-allshown')){lsSet('hl-allshown','1');setTimeout(()=>$('#modal').classList.add('on'),1200);}
+}
+
+/* ---------- REPORT / SEND ---------- */
+let LAST=null;
+/* ---------- ارسال خودکار (صف با تلاش دوباره) ---------- */
+let SESSION=null,QUEUE=[],flushing=false;
+try{QUEUE=JSON.parse(lsGet('hl-q')||'[]');}catch(e){QUEUE=[];}
+function saveQ(){lsSet('hl-q',JSON.stringify(QUEUE));}
+function newSession(game){SESSION=Date.now().toString(36)+Math.random().toString(36).slice(2,6);track('start',game,{});}
+function track(type,game,o){
+  if(!CONFIG.AUTO_SEND_URL)return;
+  QUEUE.push(Object.assign({t:new Date().toISOString(),session:SESSION,game,type,name:NAME},o));saveQ();flush();
+}
+function flush(){
+  if(flushing||!QUEUE.length||!CONFIG.AUTO_SEND_URL)return;
+  flushing=true;
+  fetch(CONFIG.AUTO_SEND_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(QUEUE[0])})
+    .then(()=>{QUEUE.shift();saveQ();flushing=false;flush();})
+    .catch(()=>{flushing=false;setTimeout(flush,15000);});
+}
+window.addEventListener('online',flush);
+function head(game){return '📚 آزمایشگاه تاریخ آمریکا\nنام: '+getName()+'\nبازی: '+game+'\nزمان: '+new Date().toLocaleString('fa-IR')+'\n';}
+function sendUI(){
+  return '<div class="card send"><b>📤 ارسال نتیجه برای معلم</b>'+
+    (CONFIG.AUTO_SEND_URL?'<p class="hint autoStat" style="margin:4px 0 0">در حال ارسال خودکار…</p>':'<p class="hint" style="margin:4px 0 0">نازنین، یکی از راه‌های زیر ره انتخاب کن و نتیجه ره بفرست 📨</p>')+
+    '<div class="sendrow">'+(navigator.share?'<button class="sbtn main" onclick="shareRep()">بفرست که ببینه چه کدم! 📨</button>':'')+
+    '<button class="sbtn" onclick="waRep()">واتس‌اپ</button><button class="sbtn" onclick="tgRep()">تلگرام</button>'+
+    '<button class="sbtn" style="grid-column:1/-1" onclick="copyRep()">کپی متن نتیجه</button></div></div>';
+}
+function deliver(game,score,text,max,detail){
+  LAST={name:getName(),game,score,text};
+  markPlayed(game);
+  if(!CONFIG.AUTO_SEND_URL)return;
+  track('final',game,{score,max:max==null?null:max,text,detail:detail||null});
+  document.querySelectorAll('.screen.on .autoStat').forEach(e=>e.textContent='✓ نتیجه خودکار برای معلم ارسال شد.');
+}
+function shareRep(){if(LAST&&navigator.share)navigator.share({text:LAST.text}).catch(()=>{});}
+function waRep(){if(LAST)window.open('https://wa.me/'+CONFIG.TEACHER_WHATSAPP+'?text='+encodeURIComponent(LAST.text),'_blank');}
+function tgRep(){if(LAST)window.open('https://t.me/share/url?url='+encodeURIComponent(location.href)+'&text='+encodeURIComponent(LAST.text),'_blank');}
+function copyRep(){
+  if(!LAST)return;
+  const done=()=>toast('کپی شد! ✂️');
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(LAST.text).then(done,fallback);}else fallback();
+  function fallback(){const t=document.createElement('textarea');t.value=LAST.text;document.body.appendChild(t);t.select();try{document.execCommand('copy');done();}catch(e){}t.remove();}
+}
+function finalCard(score,max,again){return '<div class="card final"><div>امتیاز تو</div><div class="big">'+fa(score)+' از '+fa(max)+'</div><p>'+verdict(score/max)+'</p></div>'+sendUI()+'<button class="btn" onclick="'+again+'">انتقام می‌گیرم! 🔁</button><button class="btn ghost" onclick="show(\'home\')">خانه، خانه! 🏠</button>';}
+
+/* ---------- MAP ---------- */
+const board=$('#board');
+let pos={},sel=null,drag=null,mapDone=false;
+function startMap(){
+  newSession('نقشه سیاسی');
+  pos={};sel=PRES[0].id;drag=null;mapDone=false;
+  board.querySelectorAll('.tok,.ref').forEach(e=>e.remove());
+  $('#lines').innerHTML='';$('#mapRes').innerHTML='';
+  $('#mapSubmit').style.display='block';$('#mapLegend').style.display='none';
+  renderChips();updateSubmit();show('map');
+}
+function renderChips(){
+  const c=$('#chips');c.innerHTML='';
+  PRES.forEach(p=>{
+    const b=document.createElement('button');
+    b.className='chip'+(sel===p.id?' sel':'')+(pos[p.id]?' done':'');
+    b.innerHTML='<span class="n">'+fa(p.id)+'</span>'+p.short;
+    b.onclick=()=>{if(mapDone)return;sel=p.id;renderChips();markSel();};
+    c.appendChild(b);
+  });
+}
+function tokEl(id){let t=board.querySelector('.tok[data-id="'+id+'"]');if(!t){t=document.createElement('div');t.className='tok';t.dataset.id=id;t.textContent=fa(id);board.appendChild(t);}return t;}
+function drawTok(id){const q=pos[id],t=tokEl(id);t.style.left=(q.x+5)*10+'%';t.style.top=(5-q.y)*10+'%';}
+function markSel(){board.querySelectorAll('.tok').forEach(t=>t.classList.toggle('sel',!mapDone&&+t.dataset.id===sel));}
+function setFromEvent(id,e){
+  const r=board.getBoundingClientRect();
+  const px=Math.min(Math.max(e.clientX-r.left,0),r.width),py=Math.min(Math.max(e.clientY-r.top,0),r.height);
+  pos[id]={x:px/r.width*10-5,y:5-py/r.height*10};drawTok(id);
+}
+function updateSubmit(){const n=Object.keys(pos).length;const b=$('#mapSubmit');b.disabled=n<PRES.length;b.textContent=n<PRES.length?'هنوز '+fa(PRES.length-n)+' رئیس‌جمهور سرگردان است 😅':'قاضی، حکم بته! ⚖️';}
+board.addEventListener('pointerdown',e=>{
+  if(mapDone)return;
+  const t=e.target.closest('.tok');
+  if(t){drag=+t.dataset.id;sel=drag;try{board.setPointerCapture(e.pointerId);}catch(_){}renderChips();markSel();e.preventDefault();return;}
+  if(sel==null)return;
+  const first=!pos[sel];
+  setFromEvent(sel,e);
+  if(first){const nx=PRES.find(p=>!pos[p.id]);sel=nx?nx.id:null;}
+  renderChips();markSel();updateSubmit();
+});
+board.addEventListener('pointermove',e=>{if(drag!=null)setFromEvent(drag,e);});
+const endDrag=()=>{if(drag!=null){drag=null;updateSubmit();}};
+board.addEventListener('pointerup',endDrag);
+board.addEventListener('pointercancel',endDrag);
+
+function submitMap(){
+  mapDone=true;sel=null;markSel();renderChips();
+  let total=0,lines='',rows='',rep='';
+  PRES.forEach(p=>{
+    const q=pos[p.id];
+    const d=Math.hypot(q.x-p.x,q.y-p.y);
+    const pts=Math.round(10*Math.max(0,1-d/6));
+    total+=pts;
+    const r=document.createElement('div');r.className='ref';r.textContent=fa(p.id);
+    r.style.left=(p.x+5)*10+'%';r.style.top=(5-p.y)*10+'%';board.appendChild(r);
+    lines+='<line x1="'+(q.x+5)*10+'" y1="'+(5-q.y)*10+'" x2="'+(p.x+5)*10+'" y2="'+(5-p.y)*10+'"/>';
+    rows+='<div class="res-item"><div class="head"><span>'+fa(p.id)+'. '+p.name+'</span><span>'+fa(pts)+' از ۱۰</span></div><p>'+p.why+'</p></div>';
+    rep+='• '+p.name+': '+fa(pts)+' از ۱۰ (اقتصاد '+fa(q.x.toFixed(1))+'، مداخله '+fa(q.y.toFixed(1))+')\n';
+  });
+  $('#lines').innerHTML=lines;
+  $('#mapLegend').style.display='block';
+  $('#mapSubmit').style.display='none';
+  setBest('map',total);
+  $('#mapRes').innerHTML='<div class="card final" style="margin-top:12px"><div>امتیاز تو</div><div class="big">'+fa(total)+' از ۱۰۰</div><p>'+verdict(total/100)+'</p><p class="hint">جای مربع‌ها برداشت معلم است، نه حقیقت مطلق. اگر با دلیل جای دیگری گذاشتی، دلیلت را برای معلم بنویس.</p></div>'+sendUI()+'<div class="card" style="margin-top:12px">'+rows+'</div><button class="btn" onclick="startMap()">انتقام می‌گیرم! 🔁</button><button class="btn ghost" onclick="show(\'home\')">خانه، خانه! 🏠</button>';
+  deliver('نقشه سیاسی',total,head('نقشه سیاسی')+'امتیاز: '+fa(total)+' از ۱۰۰\n\n'+rep,100,PRES.map(p=>({name:p.name,x:+pos[p.id].x.toFixed(1),y:+pos[p.id].y.toFixed(1)})));
+  if(board.scrollIntoView)board.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ---------- QUIZ: odd & twins ---------- */
+let Q=null;
+const QNAME={odd:'وصله ناجور',twins:'دوقلوهای تاریخ'};
+function startQuiz(game){
+  Q={game,list:shuffle(game==='odd'?ODD:TWINS),i:0,score:0,log:[],done:false};
+  newSession(QNAME[game]);
+  $('#qTitle').textContent=QNAME[game];
+  $('#qHint').textContent=game==='odd'?'کدام گزینه با بقیه جور نیست؟ گاهی بیش از یک جواب قابل دفاع است؛ مهم این است که دلیلش را بدانی.':'هر چهره یا گروه غیرآمریکایی را به همتای آمریکایی‌اش وصل کن.';
+  show('quiz');renderQ();
+}
+function renderQ(){
+  const it=Q.list[Q.i],n=Q.list.length,box=$('#qBox');
+  box.innerHTML='<div class="prog"><span>سؤال '+fa(Q.i+1)+' از '+fa(n)+'</span><span>امتیاز: '+fa(Q.score)+'</span></div><div class="bar"><i style="width:'+(Q.i/n*100)+'%"></i></div><div class="card"><p class="qtext">'+(it.q||'کدام یک وصله ناجور است؟')+'</p><div id="qOpts"></div><div id="qWhy"></div></div>';
+  const wrap=$('#qOpts');
+  shuffle(it.opts).forEach(o=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=o;
+    b.onclick=()=>answerQ(b,o);wrap.appendChild(b);
+  });
+}
+function answerQ(btn,o){
+  const it=Q.list[Q.i];
+  if(Q.done)return;Q.done=true;
+  const ok=o===it.ans;if(ok)Q.score++;
+  Q.streak=ok?(Q.streak||0)+1:0;
+  track('answer',QNAME[Q.game],{q:it.tag||it.opts.join(' / '),chosen:o,ans:it.ans,ok});
+  Q.log.push({label:it.tag||it.opts.join('، '),chosen:o,ans:it.ans,ok});
+  document.querySelectorAll('#qOpts .opt').forEach(b=>{if(b.textContent===it.ans)b.classList.add('ok');else if(b===btn)b.classList.add('bad');b.disabled=true;});
+  const last=Q.i===Q.list.length-1;
+  $('#qWhy').innerHTML='<div class="why"><b>'+(ok?streakMsg(Q.streak):pick('wrong'))+'</b><br>'+it.why+'</div><button class="btn alt" onclick="nextQ()">'+(last?'ببینم چه کدم 😬':'بعدی ره بیار! 💪')+'</button>';
+}
+function nextQ(){
+  Q.done=false;Q.i++;
+  if(Q.i<Q.list.length){renderQ();window.scrollTo(0,0);return;}
+  setBest(Q.game,Q.score);
+  $('#qBox').innerHTML=finalCard(Q.score,Q.list.length,"startQuiz('"+Q.game+"')");
+  const wrong=Q.log.filter(l=>!l.ok);
+  let t=head(QNAME[Q.game])+'امتیاز: '+fa(Q.score)+' از '+fa(Q.list.length)+'\n';
+  t+=wrong.length?'\nاشتباه‌ها:\n'+wrong.map(l=>'• '+l.label+'\n   جواب او: '+l.chosen+' | درست: '+l.ans).join('\n'):'\nبدون اشتباه 👏';
+  deliver(QNAME[Q.game],Q.score,t,Q.list.length);
+  window.scrollTo(0,0);
+}
+
+/* ---------- WHO ---------- */
+let W=null;
+function startWho(){newSession('من کیستم؟');W={list:shuffle(WHO),i:0,score:0,clues:1,done:false,order:null,log:[]};show('who');renderW();}
+function renderW(){
+  const it=W.list[W.i],n=W.list.length,box=$('#wBox');
+  let cl='';for(let k=0;k<(W.done?4:W.clues);k++)cl+='<li>'+it.clues[k]+'</li>';
+  box.innerHTML='<div class="prog"><span>شخصیت '+fa(W.i+1)+' از '+fa(n)+'</span><span>امتیاز: '+fa(W.score)+'</span></div><div class="bar"><i style="width:'+(W.i/n*100)+'%"></i></div><div class="card"><ol class="clues">'+cl+'</ol>'+(W.done?'':'<p class="worth">ارزش این حدس: '+fa(5-W.clues)+' امتیاز</p><button class="btn ghost" id="moreClue" '+(W.clues>=4?'disabled':'')+'>یک سرنخ دیگه، لطفاً 🙏</button>')+'<div id="wOpts"></div><div id="wWhy"></div></div>';
+  if(!W.done){
+    $('#moreClue').onclick=()=>{if(W.clues<4){W.clues++;renderW();}};
+    const wrap=$('#wOpts');
+    (W.order||(W.order=shuffle(it.opts))).forEach(o=>{
+      const b=document.createElement('button');b.className='opt';b.textContent=o;
+      b.onclick=()=>answerW(o);wrap.appendChild(b);
+    });
+  }
+}
+function answerW(o){
+  const it=W.list[W.i];
+  const ok=o===it.ans,pts=ok?5-W.clues:0;W.score+=pts;
+  W.streak=ok?(W.streak||0)+1:0;
+  track('answer','من کیستم؟',{q:'شخصیت: '+it.ans,chosen:o,ans:it.ans,ok,clues:W.clues,pts});
+  const msg=ok?(W.clues===1?pick('firstClue'):streakMsg(W.streak))+' ('+fa(pts)+' امتیاز)':pick('wrong')+' جواب '+it.ans+' بود.';
+  W.log.push({ans:it.ans,chosen:o,ok,pts,clues:W.clues});
+  W.done=true;renderW();
+  const wrap=$('#wOpts');
+  W.order.forEach(x=>{const b=document.createElement('button');b.className='opt'+(x===it.ans?' ok':x===o?' bad':'');b.textContent=x;b.disabled=true;wrap.appendChild(b);});
+  const last=W.i===W.list.length-1;
+  $('#wWhy').innerHTML='<div class="why"><b>'+msg+'</b><br>'+it.why+'</div><button class="btn alt" onclick="nextW()">'+(last?'ببینم چه کدم 😬':'نفر بعدی ره بیار 🕵️‍♀️')+'</button>';
+}
+function nextW(){
+  W.i++;W.clues=1;W.done=false;W.order=null;
+  if(W.i<W.list.length){renderW();window.scrollTo(0,0);return;}
+  setBest('who',W.score);
+  $('#wBox').innerHTML=finalCard(W.score,W.list.length*4,'startWho()');
+  const t=head('من کیستم؟')+'امتیاز: '+fa(W.score)+' از '+fa(W.list.length*4)+'\n\n'+W.log.map(l=>'• '+l.ans+': '+(l.ok?'درست با '+fa(l.clues)+' سرنخ ('+fa(l.pts)+' امتیاز)':'اشتباه (گفت: '+l.chosen+')')).join('\n');
+  deliver('من کیستم؟',W.score,t,W.list.length*4);
+  window.scrollTo(0,0);
+}
+
+/* ---------- ADVISOR ---------- */
+const MIN=80;
+const FINAL_OPTS=['نگه می‌دارم','اصلاح می‌کنم','عوض می‌کنم'];
+let A=null;
+function startAdv(){A=null;show('adv');renderAdvList();}
+function renderAdvList(){
+  const done=advDone();
+  let h='<p class="hint">یک لحظه حساس تاریخی را انتخاب کن. تو مشاور ارشد رئیس‌جمهور هستی: اول توصیه‌ات را می‌نویسی، بعد جایت را با یک مشاور مخالف عوض می‌کنی و توصیه خودت را نقد می‌کنی. این بازی نمره خودکار ندارد؛ معلم پاسخت را می‌خواند.</p><div class="games">';
+  SCEN.forEach((s,i)=>{h+='<button class="game" onclick="openScen('+i+')"><div class="ic">'+(done.includes(s.id)?'✅':'🏛️')+'</div><div><b>'+s.title+'</b><span>'+s.who+' · '+s.date+'</span></div></button>';});
+  $('#aBox').innerHTML=h+'</div>';
+  window.scrollTo(0,0);
+}
+function openScen(i){newSession('اتاق مشاوره');A={s:SCEN[i],step:1,advice:'',critique:'',final:'',note:''};renderAdv();}
+function scenHead(){return '<div class="tag">'+A.s.who+' · '+A.s.date+'</div><h3>'+A.s.title+'</h3>';}
+function bindArea(id,key,btnId,min){
+  const ta=$(id),btn=$(btnId),cnt=ta.nextElementSibling;
+  ta.value=A[key];
+  const upd=()=>{A[key]=ta.value;const n=ta.value.trim().length;if(min){btn.disabled=n<min;cnt.textContent=n<min?fa(n)+' نویسه · دست‌کم '+fa(min)+' نویسه بنویس':fa(n)+' نویسه ✓';}};
+  ta.addEventListener('input',upd);upd();
+}
+function renderAdv(){
+  const box=$('#aBox'),s=A.s;
+  const steps='<div class="prog"><span>مرحله '+fa(A.step)+' از ۴</span><span>'+s.title+'</span></div><div class="bar"><i style="width:'+((A.step-1)/4*100)+'%"></i></div>';
+  if(A.step===1){
+    box.innerHTML=steps+'<div class="card">'+scenHead()+'<p class="ctx">'+s.ctx+'</p><p class="qtext">تو مشاور ارشد '+s.who+' هستی. توصیه‌ات چیست و چرا؟</p><ul class="tips"><li>دست‌کم دو دلیل بیاور.</li><li>بگو توصیه‌ات چه هزینه یا خطری دارد.</li><li>فقط از اطلاعاتی استفاده کن که در آن لحظه در دسترس بود.</li></ul><textarea id="t1" placeholder="توصیه من به رئیس‌جمهور این است که…"></textarea><div class="count"></div><button class="btn" id="b1">حالا خودمه نقد کنم 😈</button><button class="btn ghost" onclick="renderAdvList()">ای بحران ره نمی‌خوام، دیگه‌ش 😅</button></div>';
+    bindArea('#t1','advice','#b1',MIN);
+    $('#b1').onclick=()=>{track('step','اتاق مشاوره',{q:'توصیه: '+A.s.title,body:A.advice});A.step=2;renderAdv();};
+  }else if(A.step===2){
+    box.innerHTML=steps+'<div class="card"><h3>حالا جایت را عوض کن</h3><p class="ctx">تو مشاور دیگری هستی که با این توصیه مخالف است. قوی‌ترین نقد منطقی را بنویس؛ نه توهین، نه شعار.</p><div class="quote" id="q1"></div><ul class="tips"><li>ضعیف‌ترین فرض این توصیه کدام است؟</li><li>اگر آن فرض اشتباه باشد، چه اتفاقی می‌افتد؟</li><li>چه کسی هزینه این تصمیم را می‌پردازد؟</li><li>چه گزینه‌ای نادیده گرفته شده؟</li></ul><textarea id="t2" placeholder="به عنوان مشاور مخالف، من معتقدم…"></textarea><div class="count"></div><button class="btn" id="b2">حکم نهایی ره بتم ⚖️</button><button class="btn ghost" id="bk2">یک قدم عقب 👣</button></div>';
+    $('#q1').textContent=A.advice;
+    bindArea('#t2','critique','#b2',MIN);
+    $('#b2').onclick=()=>{track('step','اتاق مشاوره',{q:'نقد: '+A.s.title,body:A.critique});A.step=3;renderAdv();};
+    $('#bk2').onclick=()=>{A.step=1;renderAdv();};
+  }else if(A.step===3){
+    box.innerHTML=steps+'<div class="card"><h3>تصمیم نهایی تو</h3><p class="ctx">دوباره مشاور اول هستی. نقد را شنیدی. با توصیه‌ات چه می‌کنی؟</p><div class="quote" id="q2"></div><div class="choices" id="ch"></div><textarea id="t3" style="min-height:100px" placeholder="در یکی دو جمله بگو چرا (اختیاری)"></textarea><div class="count"></div><button class="btn" id="b3" disabled>تاریخ چه گفت؟ 👀</button><button class="btn ghost" id="bk3">یک قدم عقب 👣</button></div>';
+    $('#q2').textContent=A.critique;
+    const ch=$('#ch');
+    FINAL_OPTS.forEach(o=>{const b=document.createElement('button');b.className='choice'+(A.final===o?' on':'');b.textContent=o;b.onclick=()=>{A.final=o;ch.querySelectorAll('.choice').forEach(x=>x.classList.toggle('on',x===b));$('#b3').disabled=false;};ch.appendChild(b);});
+    bindArea('#t3','note','#b3',0);
+    $('#b3').disabled=!A.final;
+    $('#b3').onclick=()=>{A.step=4;finishAdv();};
+    $('#bk3').onclick=()=>{A.step=2;renderAdv();};
+  }
+  window.scrollTo(0,0);
+}
+function finishAdv(){
+  const s=A.s;
+  const d=advDone();if(!d.includes(s.id)){d.push(s.id);lsSet('hl-adv',JSON.stringify(d));}
+  $('#aBox').innerHTML='<div class="card welcome"><b>'+pick('adv')+'</b></div><div class="prog"><span>پایان</span><span>'+s.title+'</span></div><div class="bar"><i style="width:100%"></i></div><div class="card">'+scenHead()+'<p class="qtext">در واقعیت چه شد؟</p><p class="ctx">'+s.real+'</p><div class="why"><b>برای فکر کردن: </b>'+s.think+'</div>'+(s.law?'<div class="why law"><b>یادداشت برای خانم حقوق‌دان ⚖️ </b><br>'+s.law+'</div>':'')+'<p class="hint" style="margin:12px 0 0">توصیه تو با تصمیم واقعی چه فرقی داشت؟ این را هم می‌توانی در پیامت به معلم اضافه کنی.</p></div>'+sendUI()+'<button class="btn" onclick="renderAdvList()">بحران بعدی ره بیار! 🔥</button><button class="btn ghost" onclick="show(\'home\')">خانه، خانه! 🏠</button>';
+  const t=head('اتاق مشاوره')+'سناریو: '+s.title+' ('+s.who+'، '+s.date+')\n\n🟦 توصیه:\n'+A.advice.trim()+'\n\n🟥 نقد مشاور مخالف:\n'+A.critique.trim()+'\n\n⚖️ تصمیم نهایی: '+A.final+(A.note.trim()?'\n'+A.note.trim():'');
+  deliver('اتاق مشاوره',null,t,null,{scen:s.title,advice:A.advice,critique:A.critique,decision:A.final,note:A.note});
+  window.scrollTo(0,0);
+}
+
+renderBest();
+SESSION='visit-'+Date.now().toString(36);track('visit','',{});flush();
+</script>
+</body>
+</html>
