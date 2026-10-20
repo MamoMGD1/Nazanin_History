@@ -343,11 +343,7 @@ function flush(){
 window.addEventListener('online',flush);
 function head(game){return '📚 آزمایشگاه تاریخ آمریکا\nنام: '+getName()+'\nبازی: '+game+'\nزمان: '+new Date().toLocaleString('fa-IR')+'\n';}
 function sendUI(){
-  return '<div class="card send"><b>📤 ارسال نتیجه برای معلم</b>'+
-    (CONFIG.AUTO_SEND_URL?'<p class="hint autoStat" style="margin:4px 0 0">در حال ارسال خودکار…</p>':'<p class="hint" style="margin:4px 0 0">نازنین، یکی از راه‌های زیر ره انتخاب کن و نتیجه ره بفرست 📨</p>')+
-    '<div class="sendrow">'+(navigator.share?'<button class="sbtn main" onclick="shareRep()">بفرست که ببینه چه کدم! 📨</button>':'')+
-    '<button class="sbtn" onclick="waRep()">واتس‌اپ</button><button class="sbtn" onclick="tgRep()">تلگرام</button>'+
-    '<button class="sbtn" style="grid-column:1/-1" onclick="copyRep()">کپی متن نتیجه</button></div></div>';
+  return '<p class="hint autoStat" style="text-align:center;margin:12px 0 0">در حال ارسال خودکار…</p>';
 }
 function deliver(game,score,text,max,detail){
   LAST={name:getName(),game,score,text};
